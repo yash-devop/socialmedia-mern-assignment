@@ -1,23 +1,48 @@
+import { config } from 'dotenv';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-
+import { User } from '../models/UserModel';
+config({
+  path: ".env"
+})
+console.log(' process.env.GOOGLE_CLIENT_ID', process.env.GOOGLE_CLIENT_ID!);
 passport.use(new GoogleStrategy({
-    clientID: 'YOUR_GOOGLE_CLIENT_ID',
-    clientSecret: 'YOUR_GOOGLE_CLIENT_SECRET',
-    callbackURL: 'http://localhost:4000/api/auth/google/callback',
+    clientID: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    callbackURL: 'http://localhost:8000/api/auth/google/callback',
   },
-  (accessToken, refreshToken, profile, done) => {
-    // You can store the profile data in a database here (e.g., MongoDB)
-    return done(null, profile); // Pass user profile to the session
+  async(accessToken, refreshToken, profile, done) => {
+    try {
+      const existingUser = await User.findOne({ googleId: profile.id });
+      if (existingUser) {
+        return done(null, existingUser);
+      }
+
+      const newUser = new User({
+        googleId: profile.id,
+        name: profile.displayName,
+        email: profile.emails ? profile.emails[0].value : "",
+        profilePicture: profile.photos ? profile.photos[0].value : '',
+      });
+      await newUser.save();
+      return done(null, newUser);
+    } catch (error) {
+      done(error, undefined);
+    }
   }
 ));
 
 // Serialize user to save to session
-passport.serializeUser((user, done) => {
-  done(null, user);
+passport.serializeUser((user:any, done) => {
+  console.log('user in serialize',user);
+  done(null, user.id);
 });
 
-// Deserialize user from session
-passport.deserializeUser((user: any, done) => {
-  done(null, user);
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);  // Attach the full user object to `req.user`
+  } catch (error) {
+    done(error);
+  }
 });
