@@ -28,7 +28,6 @@ authRouter.get("/profile", (req, res) => {
       message: "Please login first.",
     });
   }
-  console.log("req", req.user);
   res.json(req.user);
 });
 
