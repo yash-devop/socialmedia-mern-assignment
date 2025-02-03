@@ -1,5 +1,4 @@
 import { useAuth } from "@/context/AuthContext";
-import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 export default function AuthProtected({
@@ -7,16 +6,12 @@ export default function AuthProtected({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isAuthCheckComplete } = useAuth();
 
-  useEffect(() => {
-    if (user !== null) {
-      setIsLoading(false);
-    }
-  }, [user]);
+  // rreturning the protected content after auth check completion
+  if (!isAuthCheckComplete) {
+    return null;
+  }
 
-  if (isLoading) return null; // Don't show anything until user state is determined
-
-  return user ? children : <Navigate to="/login" replace />;
+  return user ? children : <Navigate to="/" replace />;
 }
