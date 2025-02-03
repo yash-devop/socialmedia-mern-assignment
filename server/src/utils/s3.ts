@@ -14,7 +14,7 @@ import {
   const bucketRegion = process.env.AWS_REGION!;
   const accesskey = process.env.AWS_ACCESS_KEY_ID!;
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY!;
-  
+
   // S3 Client to interact with AWS S3.
   const s3 = new S3Client({
     region: bucketRegion,
@@ -36,7 +36,7 @@ import {
     data,
     contentType,
     key,
-  }: UploadToS3Type<T>): Promise<string> => {
+  }: UploadToS3Type<T>) => {
     const command = new PutObjectCommand({
       Body: data, // Now 'data' is guaranteed to be one of the allowed types
       ContentType: contentType,
@@ -45,12 +45,6 @@ import {
     });
   
     await s3.send(command); // Upload file to S3
-  
-    // After uploading, generate the signed URL for accessing the file
-    const signedUrl = await getObject({
-        key
-    })
-    return signedUrl; // Return the signed URL for the uploaded file
   };
   
   // Delete object from S3
@@ -82,7 +76,6 @@ import {
     });
   
     const signedUrl = await getSignedUrlAWS(getCommand);
-    console.log("signedUrl : ", signedUrl);
   
     return signedUrl;
   };  
