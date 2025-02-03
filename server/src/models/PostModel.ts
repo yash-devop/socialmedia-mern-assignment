@@ -12,7 +12,9 @@ const postSchema = new mongoose.Schema(
     },
     imageUrl: {
       type: String,
-      required: true,
+    },
+    imageKey: {
+      type: String,
     },
     user: {
       type: mongoose.Types.ObjectId,
