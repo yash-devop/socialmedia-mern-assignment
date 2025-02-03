@@ -2,11 +2,14 @@ import express, { Request, Response } from "express";
 import passport from "passport";
 import session from "express-session";
 import { connectMongoDB } from "./config/db";
+
 import { authRouter } from "./routes/AuthRoutes";
 import "./config/passport"; // i imported the passport config here... it will run when server get started.
 import cors from "cors"
 import { config } from "dotenv";
 import MongoStore from "connect-mongo";
+import postRouter from "./routes/PostRoutes";
+import { authMiddleware } from "./middlewares/AuthMiddleware";
 config({
   path:".env"
 })
@@ -44,13 +47,16 @@ app.use(passport.session());
 
 const apiRouter = express.Router();
 
-// Use the authRouter for authentication-related routes
+// global /api route prefix.
 app.use("/api", apiRouter);
 
-// Mount the authRouter under "/api/auth"
+// and then attaching the feature specific routes prefixes.
 apiRouter.use("/auth", authRouter);
+apiRouter.use("/posts", authMiddleware, postRouter)
 
 const PORT = 8000;
+const DOMAIN = process.env.NODE_ENV === "production" ? "prod_url" : `http://localhost:${PORT}`
+
 app.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
+  console.log(`Server started on ${DOMAIN}`);
 });
