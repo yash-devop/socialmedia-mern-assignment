@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Google } from "./icons/Google";
 import { Button } from "./ui/button";
+import { BACKEND_URL } from "@/config/constants";
 
 export const GoogleButton=({
   className
@@ -9,7 +10,7 @@ export const GoogleButton=({
 })=>{
     const handleLogin = () => {
         // Redirects the user to the backend API to start Google OAuth flow
-        window.location.href = 'http://localhost:8000/api/auth/google';
+        window.location.href = `${BACKEND_URL}/api/auth/google`;
       };
     
   
