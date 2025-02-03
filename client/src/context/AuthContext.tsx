@@ -1,42 +1,72 @@
-import { BACKEND_URL } from "@/config/constants";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "@/config/constants";
 
 type User = {
   email: string;
   name: string;
   profilePicture: string;
-  id: string;
+  _id: string;
 };
+
 type AuthContextType = {
   user: User | null;
+  isAuthCheckComplete: boolean;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  isAuthCheckComplete: false,
+  logout: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const getUser = async () => {
+  const [isAuthCheckComplete, setIsAuthCheckComplete] = useState(false);
+  const navigate = useNavigate();
+
+  const getUserProfile = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/profile`, {
-        method: "GET",
         credentials: "include",
       });
-      const data = await response.json();
-      const userData:User = data;
-      console.log('data',userData);
-      setUser(userData);
-    } catch (error) {
-      console.log("Error in useAuth", error);
+
+      if (response.ok) {
+        const data: User = await response.json();
+        console.log('data',data);
+        setUser(data);
+      }
+    } catch {
       setUser(null);
+    } finally {
+      setIsAuthCheckComplete(true);
     }
   };
+
+  const logout = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setUser(null);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   useEffect(() => {
-    getUser();
+    getUserProfile();
   }, []);
+
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isAuthCheckComplete, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
