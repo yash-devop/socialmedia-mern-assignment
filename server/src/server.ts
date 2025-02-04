@@ -20,7 +20,7 @@ const app = express();
 // corss setup =>
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:3000","http://localhost:5173"],
+  origin: ["http://localhost:3000","http://localhost:5173","https://socialmedia.frontend.yashstack.com"],
 }))
 
 // Middleware setup =>

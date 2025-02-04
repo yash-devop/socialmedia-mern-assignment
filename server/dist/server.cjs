@@ -404,7 +404,7 @@ connectMongoDB();
 var app = (0, import_express3.default)();
 app.use((0, import_cors.default)({
   credentials: true,
-  origin: ["http://localhost:3000", "http://localhost:5173"]
+  origin: ["http://localhost:3000", "http://localhost:5173", "https://socialmedia.frontend.yashstack.com"]
 }));
 app.use(import_express3.default.json());
 app.use((0, import_express_session.default)({
