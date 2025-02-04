@@ -48,7 +48,7 @@ var import_express = __toESM(require("express"), 1);
 var import_passport = __toESM(require("passport"), 1);
 
 // src/config/constants.ts
-var FRONTEND_URL = "http://localhost:5173";
+var FRONTEND_URL = "https://socialmedia.frontend.yashstack.com";
 var BACKEND_URL = "https://socialmedia.api.yashstack.com";
 
 // src/routes/AuthRoutes.ts
