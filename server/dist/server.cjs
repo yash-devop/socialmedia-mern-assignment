@@ -49,6 +49,7 @@ var import_passport = __toESM(require("passport"), 1);
 
 // src/config/constants.ts
 var FRONTEND_URL = "http://localhost:5173";
+var BACKEND_URL = "https://socialmedia.api.yashstack.com";
 
 // src/routes/AuthRoutes.ts
 var authRouter = import_express.default.Router();
@@ -135,7 +136,7 @@ import_passport2.default.use(new import_passport_google_oauth20.Strategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:8000/api/auth/google/callback"
+    callbackURL: `${BACKEND_URL}/api/auth/google/callback`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
