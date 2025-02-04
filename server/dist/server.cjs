@@ -416,8 +416,6 @@ app.use((0, import_express_session.default)({
     // 1 day in milliseconds
     httpOnly: true,
     // for security
-    secure: process.env.NODE_ENV === "production",
-    // Use secure cookies in production
     sameSite: "strict"
     // same-site behavior
   },

@@ -32,7 +32,6 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
     httpOnly: true, // for security
-    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
     sameSite: "strict", // same-site behavior
   },
   store: MongoStore.create({
